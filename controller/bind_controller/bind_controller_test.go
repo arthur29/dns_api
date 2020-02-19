@@ -15,7 +15,7 @@ func TestGetListStatusOk(t *testing.T) {
 	rec := httptest.NewRecorder()
 	con := e.NewContext(req, rec)
 
-	if assert.NoError(ListIndex(con)) {
+	if assert.NoError(t, ListIndex(con)) {
 		assert.Equal(t, 200, rec.Code)
 	}
 }
