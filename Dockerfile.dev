@@ -1,0 +1,14 @@
+FROM golang:1.13-alpine
+
+RUN apk update && \
+    apk add build-base bind=9.14.8-r5 bind-tools git && \
+    go get -u github.com/gin-gonic/gin && \
+    go get github.com/kardianos/govendor
+
+#TODO: remove it
+COPY config/resolv.conf /etc/resolv.conf
+
+COPY config/named.conf /etc/bind/named.conf
+COPY config/myzone.com.zone /etc/bind/zone/myzone.com.zone
+
+WORKDIR /go/src/project
