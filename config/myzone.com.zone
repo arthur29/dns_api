@@ -1,0 +1,14 @@
+$TTL 86400
+
+@ IN SOA myzone.com arthur29 (
+  2020021600
+  3600
+  900
+  604800
+  86400
+)
+
+@      IN NS .
+@      IN A  192.168.11.79x.
+server IN A  192.168.11.79
+client IN A  192.168.11.87
