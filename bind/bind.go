@@ -1,7 +1,7 @@
 package bind
 
 import (
-	"fmt"
+	"io"
 	"os"
 
 	"github.com/wpalmer/gozone"
@@ -9,22 +9,31 @@ import (
 
 var zonefile = "/etc/bind/zone/myzone.com.zone"
 
-func ReadZoneFile() (array []gozone.Record) {
-	stream, _ := os.Open(zonefile)
+type Bind interface {
+	ReadZoneFile() ([]gozone.Record, error)
+}
 
-	scanner := gozone.NewScanner(stream)
+func ReadZoneFile() (arrayGozoneRecords []gozone.Record, err error) {
+	stream, err := os.Open(zonefile)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return parseZoneFile(stream), nil
+}
+
+func parseZoneFile(reader io.Reader) (arrayGozoneRecords []gozone.Record) {
+	scanner := gozone.NewScanner(reader)
 	var record gozone.Record
 
 	for {
 		err := scanner.Next(&record)
+
 		if err != nil {
 			break
 		}
-		array = append(array, record)
+		arrayGozoneRecords = append(arrayGozoneRecords, record)
 	}
-	for _, entry := range array {
-		fmt.Printf("%v\n", entry)
-	}
-
-	return array
+	return arrayGozoneRecords
 }
