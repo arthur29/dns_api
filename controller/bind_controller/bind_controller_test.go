@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetListStatusOk(t *testing.T) {
+func TestGetListStatusOkWhenBindReturnsNoError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	rec := httptest.NewRecorder()
@@ -18,4 +18,20 @@ func TestGetListStatusOk(t *testing.T) {
 	if assert.NoError(t, ListIndex(con)) {
 		assert.Equal(t, 200, rec.Code)
 	}
+}
+
+func TestGetListReturnsJSONWhenBindReturnsNoError(t *testing.T) {
+
+}
+
+func TestGetListReturnsAListOfZoneRecordsWhenBindReturnsNoError(t *testing.T) {
+
+}
+
+func TestGetListReturnsStringMessageWhenBindReturnsInError(t *testing.T) {
+
+}
+
+func TestGetListReturnsInternalServerErrorWhenBindReturnsInError(t *testing.T) {
+
 }
