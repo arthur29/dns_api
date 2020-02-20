@@ -9,7 +9,7 @@ build-docker-image-dev:
 build-docker-image:
 	@docker build -t dns-challenge:0.0.1 .
 
-run: build-docker-image
+run:
 	@docker run -p 53:53 -p 9000:9000 dns-challange:0.0.1
 
 test:
