@@ -8,6 +8,7 @@ import (
 
 func main() {
 	e := echo.New()
-	e.GET("/list", bind_controller.ListIndex)
+	bindController := bind_controller.InitializeBindController()
+	e.GET("/list", bindController.ListIndex)
 	e.Logger.Fatal(e.Start(":9000"))
 }
