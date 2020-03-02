@@ -8,7 +8,7 @@ import (
 	"github.com/wpalmer/gozone"
 )
 
-var zonefile = "/etc/bind/zone/myzone.com.zone"
+const zonefile = "/etc/bind/zone/myzone.com.zone"
 
 type Record struct {
 	DomainName string
@@ -19,18 +19,48 @@ type Record struct {
 	Comment    string
 }
 
-type Bind interface {
-	ReadZoneFile() ([]Record, error)
+type Bind struct {
+	bindBehavior BindBehavior
+	ArrayRecords []Record
 }
 
-func readZoneFile() ([]Record, error) {
+type BindBehavior interface {
+	openFileStream() (io.Reader, error)
+}
+
+type bindImp struct{}
+
+func InitializeBind() Bind {
+	var bind Bind
+	bind.bindBehavior = new(bindImp)
+
+	return bind
+}
+
+func (bind *Bind) GetZoneRecords() error {
+	if bind.ArrayRecords == nil {
+		stream, err := bind.bindBehavior.openFileStream()
+
+		if err == nil {
+			bind.ArrayRecords = parseZoneFile(stream)
+
+			return nil
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (bind *bindImp) openFileStream() (io.Reader, error) {
 	stream, err := os.Open(zonefile)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return parseZoneFile(stream), nil
+	return stream, nil
 }
 
 func parseZoneFile(reader io.Reader) (array []Record) {
