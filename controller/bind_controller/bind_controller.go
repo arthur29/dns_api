@@ -27,8 +27,10 @@ func (bindControllerImp *BindControllerImp) searchRecords() ([]bind.Record, erro
 
 func InitializeBindController() BindController {
 	var bindController BindController
+	var bindControllerImp = new(BindControllerImp)
 
-	bindController.bindControllerBehavior = &BindControllerImp{}
+	bindControllerImp.bind = bind.InitializeBind()
+	bindController.bindControllerBehavior = bindControllerImp
 
 	return bindController
 }
