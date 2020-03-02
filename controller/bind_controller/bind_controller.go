@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type BindControllerDI struct {
+type BindController struct {
 	bindControllerBehavior BindControllerBehavior
 }
 
@@ -15,22 +15,26 @@ type BindControllerBehavior interface {
 	searchRecords() ([]bind.Record, error)
 }
 
-type BindController struct{}
-
-func (bindController *BindController) searchRecords() ([]bind.Record, error) {
-	return bind.ReadZoneFile()
+type BindControllerImp struct {
+	bind bind.Bind
 }
 
-func InitializeBindController() BindControllerDI {
-	var bindControllerDI BindControllerDI
+func (bindControllerImp *BindControllerImp) searchRecords() ([]bind.Record, error) {
+	err := bindControllerImp.bind.GetZoneRecords()
 
-	bindControllerDI.bindControllerBehavior = &BindController{}
-
-	return bindControllerDI
+	return bindControllerImp.bind.ArrayRecords, err
 }
 
-func (bindControllerDI *BindControllerDI) ListIndex(c echo.Context) error {
-	array, err := bindControllerDI.bindControllerBehavior.searchRecords()
+func InitializeBindController() BindController {
+	var bindController BindController
+
+	bindController.bindControllerBehavior = &BindControllerImp{}
+
+	return bindController
+}
+
+func (bindController *BindController) Index(c echo.Context) error {
+	array, err := bindController.bindControllerBehavior.searchRecords()
 
 	if err != nil {
 		fmt.Errorf("Error on read dns zone %v", err)

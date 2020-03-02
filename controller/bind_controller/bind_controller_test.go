@@ -21,13 +21,13 @@ func (bindController *MockedBindController) searchRecords() ([]bind.Record, erro
 	return bindController.returnValue, bindController.err
 }
 
-func initializeMockedBindController(returnValueArgument []bind.Record, errArgument error) BindControllerDI {
-	var bindControllerDI BindControllerDI
-	bindControllerDI.bindControllerBehavior = &MockedBindController{returnValue: returnValueArgument, err: errArgument}
-	return bindControllerDI
+func initializeMockedBindController(returnValueArgument []bind.Record, errArgument error) BindController {
+	var bindController BindController
+	bindController.bindControllerBehavior = &MockedBindController{returnValue: returnValueArgument, err: errArgument}
+	return bindController
 }
 
-func TestGetListReturnsJSONWithStatusOkWhenBindReturnsNoError(t *testing.T) {
+func TestGetIndextReturnsJSONWithStatusOkWhenBindReturnsNoError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	resp := httptest.NewRecorder()
@@ -35,13 +35,13 @@ func TestGetListReturnsJSONWithStatusOkWhenBindReturnsNoError(t *testing.T) {
 
 	bindController := initializeMockedBindController(nil, nil)
 
-	if assert.NoError(t, bindController.ListIndex(con)) {
+	if assert.NoError(t, bindController.Index(con)) {
 		assert.Equal(t, 200, resp.Code)
 		assert.Contains(t, resp.Header()["Content-Type"][0], "application/json")
 	}
 }
 
-func TestGetListReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
+func TestGetIdexReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	resp := httptest.NewRecorder()
@@ -49,16 +49,16 @@ func TestGetListReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
 
 	records := []bind.Record{bind.Record{DomainName: "myzone.com.", TimeToLive: "86400", Class: "IN", Type: "SOA", Data: []string{"test"}, Comment: "Comment"}}
 
-	bindController := initializeMockedBindController(record, nil)
+	bindController := initializeMockedBindController(records, nil)
 
-	if assert.NoError(t, bindController.ListIndex(con)) {
+	if assert.NoError(t, bindController.Index(con)) {
 		var recordArray []bind.Record
 		json.Unmarshal(resp.Body.Bytes(), &recordArray)
 		assert.Equal(t, records, recordArray)
 	}
 }
 
-func TestGetListReturns500AndMessageWhenBindReturnsInError(t *testing.T) {
+func TestGetReturns500AndMessageWhenBindReturnsInError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	resp := httptest.NewRecorder()
@@ -66,7 +66,7 @@ func TestGetListReturns500AndMessageWhenBindReturnsInError(t *testing.T) {
 
 	bindController := initializeMockedBindController(nil, errors.New("Error on test"))
 
-	if assert.NoError(t, bindController.ListIndex(con)) {
+	if assert.NoError(t, bindController.Index(con)) {
 		assert.Equal(t, 500, resp.Code)
 		assert.Equal(t, "Error on read dns zone file", resp.Body.String())
 	}
