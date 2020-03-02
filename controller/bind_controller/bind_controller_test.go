@@ -1,6 +1,8 @@
 package bind_controller
 
 import (
+	"dns_api/bind"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -8,19 +10,18 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
-	"github.com/wpalmer/gozone"
 )
 
 type MockedBindController struct {
-	returnValue []gozone.Record
+	returnValue []bind.Record
 	err         error
 }
 
-func (bindController *MockedBindController) searchRecords() ([]gozone.Record, error) {
+func (bindController *MockedBindController) searchRecords() ([]bind.Record, error) {
 	return bindController.returnValue, bindController.err
 }
 
-func initializeMockedBindController(returnValueArgument []gozone.Record, errArgument error) BindControllerDI {
+func initializeMockedBindController(returnValueArgument []bind.Record, errArgument error) BindControllerDI {
 	var bindControllerDI BindControllerDI
 	bindControllerDI.bindControllerBehavior = &MockedBindController{returnValue: returnValueArgument, err: errArgument}
 	return bindControllerDI
@@ -40,11 +41,24 @@ func TestGetListReturnsJSONWithStatusOkWhenBindReturnsNoError(t *testing.T) {
 	}
 }
 
-func TestGetListReturnsAListOfZoneRecordsWhenBindReturnsNoError(t *testing.T) {
+func TestGetListReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/list", nil)
+	resp := httptest.NewRecorder()
+	con := e.NewContext(req, resp)
 
+	records := []bind.Record{bind.Record{DomainName: "myzone.com.", TimeToLive: "86400", Class: "IN", Type: "SOA", Data: []string{"test"}, Comment: "Comment"}}
+
+	bindController := initializeMockedBindController(record, nil)
+
+	if assert.NoError(t, bindController.ListIndex(con)) {
+		var recordArray []bind.Record
+		json.Unmarshal(resp.Body.Bytes(), &recordArray)
+		assert.Equal(t, records, recordArray)
+	}
 }
 
-func TestGetListReturnsMessageWhenBindReturnsInError(t *testing.T) {
+func TestGetListReturns500AndMessageWhenBindReturnsInError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	resp := httptest.NewRecorder()
@@ -56,9 +70,5 @@ func TestGetListReturnsMessageWhenBindReturnsInError(t *testing.T) {
 		assert.Equal(t, 500, resp.Code)
 		assert.Equal(t, "Error on read dns zone file", resp.Body.String())
 	}
-
-}
-
-func TestGetListReturnsInternalServerErrorWhenBindReturnsInError(t *testing.T) {
 
 }

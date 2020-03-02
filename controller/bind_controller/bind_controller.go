@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/labstack/echo/v4"
-	"github.com/wpalmer/gozone"
 )
 
 type BindControllerDI struct {
@@ -13,12 +12,12 @@ type BindControllerDI struct {
 }
 
 type BindControllerBehavior interface {
-	searchRecords() ([]gozone.Record, error)
+	searchRecords() ([]bind.Record, error)
 }
 
 type BindController struct{}
 
-func (bindController *BindController) searchRecords() ([]gozone.Record, error) {
+func (bindController *BindController) searchRecords() ([]bind.Record, error) {
 	return bind.ReadZoneFile()
 }
 
@@ -31,11 +30,11 @@ func InitializeBindController() BindControllerDI {
 }
 
 func (bindControllerDI *BindControllerDI) ListIndex(c echo.Context) error {
-	gozoneArray, err := bindControllerDI.bindControllerBehavior.searchRecords()
+	array, err := bindControllerDI.bindControllerBehavior.searchRecords()
 
 	if err != nil {
 		fmt.Errorf("Error on read dns zone %v", err)
 		return c.String(500, "Error on read dns zone file")
 	}
-	return c.JSONPretty(200, gozoneArray, "  ")
+	return c.JSONPretty(200, array, "  ")
 }

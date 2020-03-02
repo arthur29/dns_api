@@ -3,17 +3,27 @@ package bind
 import (
 	"io"
 	"os"
+	"strconv"
 
 	"github.com/wpalmer/gozone"
 )
 
 var zonefile = "/etc/bind/zone/myzone.com.zone"
 
-type Bind interface {
-	ReadZoneFile() ([]gozone.Record, error)
+type Record struct {
+	DomainName string
+	TimeToLive string
+	Class      string
+	Type       string
+	Data       []string
+	Comment    string
 }
 
-func ReadZoneFile() (arrayGozoneRecords []gozone.Record, err error) {
+type Bind interface {
+	ReadZoneFile() ([]Record, error)
+}
+
+func readZoneFile() ([]Record, error) {
 	stream, err := os.Open(zonefile)
 
 	if err != nil {
@@ -23,7 +33,7 @@ func ReadZoneFile() (arrayGozoneRecords []gozone.Record, err error) {
 	return parseZoneFile(stream), nil
 }
 
-func parseZoneFile(reader io.Reader) (arrayGozoneRecords []gozone.Record) {
+func parseZoneFile(reader io.Reader) (array []Record) {
 	scanner := gozone.NewScanner(reader)
 	var record gozone.Record
 
@@ -33,7 +43,20 @@ func parseZoneFile(reader io.Reader) (arrayGozoneRecords []gozone.Record) {
 		if err != nil {
 			break
 		}
-		arrayGozoneRecords = append(arrayGozoneRecords, record)
+		array = append(array, castRecord(record))
 	}
-	return arrayGozoneRecords
+	return array
+}
+
+func castRecord(gozoneRecord gozone.Record) Record {
+	var record Record
+
+	record.DomainName = gozoneRecord.DomainName
+	record.TimeToLive = strconv.FormatInt(gozoneRecord.TimeToLive, 10)
+	record.Class = gozoneRecord.Class.String()
+	record.Type = gozoneRecord.Type.String()
+	record.Data = gozoneRecord.Data
+	record.Comment = gozoneRecord.Comment
+
+	return record
 }
