@@ -39,19 +39,15 @@ func InitializeBind() Bind {
 }
 
 func (bind *Bind) GetZoneRecords() error {
-	if bind.ArrayRecords == nil {
-		stream, err := bind.bindBehavior.openFileStream()
+	stream, err := bind.bindBehavior.openFileStream()
 
-		if err == nil {
-			bind.ArrayRecords = parseZoneFile(stream)
+	if err == nil {
+		bind.ArrayRecords = parseZoneFile(stream)
 
-			return nil
-		}
-
-		return err
+		return nil
 	}
 
-	return nil
+	return err
 }
 
 func (bind *bindImp) openFileStream() (io.Reader, error) {

@@ -27,7 +27,7 @@ func initializeBindMocked(returnValue string, err error) Bind {
 	return bind
 }
 
-func TestWhenArrayRecordsIsNilShouldPopulateItWithDataFromFile(t *testing.T) {
+func TestPopulateArrayRecordWithDataFromFile(t *testing.T) {
 	zoneInfo := `$ORIGIN test.
 				 $TTL 1
 				 @      IN A  192.168.11.79`
@@ -50,7 +50,7 @@ func TestWhenArrayRecordsIsNilShouldPopulateItWithDataFromFile(t *testing.T) {
 	assert.Equal(t, arrayRecords, bind.ArrayRecords)
 }
 
-func TestWhenArrayRecordsIsNilShouldParseZoneFileAndReturnASliceOfRecords(t *testing.T) {
+func TestParseZoneFileAndReturnASliceOfRecords(t *testing.T) {
 	zoneInfo := `$ORIGIN myzone.com.
 				 $TTL 86400
 				 @ IN SOA myzone.com arthur29 ( 2020021600 3600 900 604800 86400 )
@@ -67,7 +67,7 @@ func TestWhenArrayRecordsIsNilShouldParseZoneFileAndReturnASliceOfRecords(t *tes
 	assert.Equal(t, reflect.TypeOf(expected), reflect.TypeOf(array[0]))
 }
 
-func TestWhenArrayRecordsIsNilShouldParseZoneFileAndReturnClassTypeTTLAndDataAsStringValues(t *testing.T) {
+func TestParseZoneFileAndReturnClassTypeTTLAndDataAsStringValues(t *testing.T) {
 	zoneInfo := `$ORIGIN myzone.com.
 				 $TTL 86400
 				 @ IN SOA myzone.com arthur29 ( 2020021600 3600 900 604800 86400 )`
