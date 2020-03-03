@@ -8,7 +8,10 @@ import (
 
 func main() {
 	e := echo.New()
+
 	bindController := bind_controller.InitializeBindController()
 	e.GET("/", bindController.Index)
+	e.POST("/:id", bindController.Update)
+
 	e.Logger.Fatal(e.Start(":9000"))
 }

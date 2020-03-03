@@ -27,7 +27,7 @@ func initializeMockedBindController(returnValueArgument []bind.Record, errArgume
 	return bindController
 }
 
-func TestGetIndextReturnsJSONWithStatusOkWhenBindReturnsNoError(t *testing.T) {
+func TestIndextReturnsJSONWithStatusOkWhenBindReturnsNoError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	resp := httptest.NewRecorder()
@@ -41,7 +41,7 @@ func TestGetIndextReturnsJSONWithStatusOkWhenBindReturnsNoError(t *testing.T) {
 	}
 }
 
-func TestGetIdexReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
+func TestIndexReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	resp := httptest.NewRecorder()
@@ -58,7 +58,7 @@ func TestGetIdexReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
 	}
 }
 
-func TestGetReturns500AndMessageWhenBindReturnsInError(t *testing.T) {
+func TestIndexReturns500AndMessageWhenBindReturnsInError(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	resp := httptest.NewRecorder()
