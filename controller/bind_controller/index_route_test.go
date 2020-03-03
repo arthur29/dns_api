@@ -23,7 +23,7 @@ func (bindController *MockedBindController) searchRecords() ([]bind.Record, erro
 
 func initializeMockedBindController(returnValueArgument []bind.Record, errArgument error) BindController {
 	var bindController BindController
-	bindController.bindControllerBehavior = &MockedBindController{returnValue: returnValueArgument, err: errArgument}
+	bindController.bindControllerIndexBehavior = &MockedBindController{returnValue: returnValueArgument, err: errArgument}
 	return bindController
 }
 
@@ -47,7 +47,7 @@ func TestIndexReturnsAListOfBindRecordsWhenBindReturnsNoError(t *testing.T) {
 	resp := httptest.NewRecorder()
 	con := e.NewContext(req, resp)
 
-	records := []bind.Record{bind.Record{DomainName: "myzone.com.", TimeToLive: "86400", Class: "IN", Type: "SOA", Data: []string{"test"}, Comment: "Comment"}}
+	records := []bind.Record{bind.Record{DomainName: "myzone.com.", TimeToLive: "86400", Class: "IN", Type: "SOA", Data: "test", Comment: "Comment"}}
 
 	bindController := initializeMockedBindController(records, nil)
 

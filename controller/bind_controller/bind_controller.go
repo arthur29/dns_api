@@ -5,28 +5,12 @@ import (
 )
 
 type BindController struct {
-	bindControllerBehavior BindControllerBehavior
-}
-
-type BindControllerBehavior interface {
-	searchRecords() ([]bind.Record, error)
-	updateRecord(int, bind.Record) error
+	bindControllerIndexBehavior  BindControllerIndexBehavior
+	bindControllerUpdateBehavior BindControllerUpdateBehavior
 }
 
 type BindControllerImp struct {
 	bind bind.Bind
-}
-
-func (bindControllerImp *BindControllerImp) searchRecords() ([]bind.Record, error) {
-	err := bindControllerImp.bind.GetZoneRecords()
-
-	return bindControllerImp.bind.ArrayRecords, err
-}
-
-func (bindControllerImp *BindControllerImp) updateRecord(position int, record bind.Record) error {
-	err := bindControllerImp.bind.UpdateZoneRecord(position, record)
-
-	return err
 }
 
 func InitializeBindController() BindController {
@@ -36,7 +20,8 @@ func InitializeBindController() BindController {
 	bind := bind.InitializeBind()
 	bindControllerImp.bind = bind
 
-	bindController.bindControllerBehavior = bindControllerImp
+	bindController.bindControllerIndexBehavior = bindControllerImp
+	bindController.bindControllerUpdateBehavior = bindControllerImp
 
 	return bindController
 }
