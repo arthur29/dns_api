@@ -12,7 +12,7 @@ type BindControllerIndexBehavior interface {
 }
 
 func (bindControllerImp *BindControllerImp) searchRecords() ([]bind.Record, error) {
-	err := bindControllerImp.bind.GetZoneRecords()
+	err := bindControllerImp.bind.LoadZoneRecords()
 
 	return bindControllerImp.bind.ArrayRecords, err
 }

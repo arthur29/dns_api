@@ -45,7 +45,7 @@ func TestPopulateArrayRecordWithDataFromFile(t *testing.T) {
 		},
 	}
 
-	bind.GetZoneRecords()
+	bind.LoadZoneRecords()
 
 	assert.Equal(t, arrayRecords, bind.ArrayRecords)
 }
@@ -58,7 +58,7 @@ func TestParseZoneFileAndReturnASliceOfRecords(t *testing.T) {
 				 @      IN A  192.168.11.79`
 	bind := initializeBindMocked(zoneInfo, nil)
 
-	bind.GetZoneRecords()
+	bind.LoadZoneRecords()
 	array := bind.ArrayRecords
 
 	assert.Equal(t, reflect.Slice, reflect.TypeOf(array).Kind())
@@ -73,7 +73,7 @@ func TestParseZoneFileAndReturnClassTypeTTLAndDataAsStringValues(t *testing.T) {
 				 @ IN SOA myzone.com arthur29 ( 2020021600 3600 900 604800 86400 )`
 	bind := initializeBindMocked(zoneInfo, nil)
 
-	bind.GetZoneRecords()
+	bind.LoadZoneRecords()
 	array := bind.ArrayRecords
 
 	record := array[0]

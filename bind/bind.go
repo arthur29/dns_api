@@ -38,7 +38,7 @@ func InitializeBind() Bind {
 	return bind
 }
 
-func (bind *Bind) GetZoneRecords() error {
+func (bind *Bind) LoadZoneRecords() error {
 	stream, err := bind.bindBehavior.openFileStream()
 
 	if err == nil {
