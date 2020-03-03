@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/wpalmer/gozone"
 )
@@ -15,7 +16,7 @@ type Record struct {
 	TimeToLive string
 	Class      string
 	Type       string
-	Data       []string
+	Data       string
 	Comment    string
 }
 
@@ -85,7 +86,7 @@ func castRecord(gozoneRecord gozone.Record) Record {
 	record.TimeToLive = strconv.FormatInt(gozoneRecord.TimeToLive, 10)
 	record.Class = gozoneRecord.Class.String()
 	record.Type = gozoneRecord.Type.String()
-	record.Data = gozoneRecord.Data
+	record.Data = strings.Join(gozoneRecord.Data, " ")
 	record.Comment = gozoneRecord.Comment
 
 	return record

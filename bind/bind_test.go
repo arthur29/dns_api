@@ -40,7 +40,7 @@ func TestWhenArrayRecordsIsNilShouldPopulateItWithDataFromFile(t *testing.T) {
 			TimeToLive: "1",
 			Type:       "A",
 			Class:      "IN",
-			Data:       []string{"192.168.11.79"},
+			Data:       "192.168.11.79",
 			Comment:    "",
 		},
 	}
@@ -67,7 +67,7 @@ func TestWhenArrayRecordsIsNilShouldParseZoneFileAndReturnASliceOfRecords(t *tes
 	assert.Equal(t, reflect.TypeOf(expected), reflect.TypeOf(array[0]))
 }
 
-func TestWhenArrayRecordsIsNilShouldParseZoneFileAndReturnClassTypeAndTTLAsStringValues(t *testing.T) {
+func TestWhenArrayRecordsIsNilShouldParseZoneFileAndReturnClassTypeTTLAndDataAsStringValues(t *testing.T) {
 	zoneInfo := `$ORIGIN myzone.com.
 				 $TTL 86400
 				 @ IN SOA myzone.com arthur29 ( 2020021600 3600 900 604800 86400 )`
@@ -78,35 +78,8 @@ func TestWhenArrayRecordsIsNilShouldParseZoneFileAndReturnClassTypeAndTTLAsStrin
 
 	record := array[0]
 
-	assert.Equal(t, record.Class, "IN")
-	assert.Equal(t, record.Type, "SOA")
-	assert.Equal(t, record.TimeToLive, "86400")
-}
-
-func TestWhenArrayRecordsIsNotNilShouldIgnoreStreamAndReturnThatValue(t *testing.T) {
-	zoneInfo := `$ORIGIN myzone.com.
-				 $TTL 86400
-				 @ IN SOA myzone.com arthur29 ( 2020021600 3600 900 604800 86400 )
-				 @      IN NS .
-				 @      IN A  192.168.11.79`
-
-	var arrayRecords = []Record{
-		Record{
-			DomainName: "test.",
-			TimeToLive: "1",
-			Type:       "A",
-			Class:      "IN",
-			Data:       []string{"192.168.11.79"},
-			Comment:    "",
-		},
-	}
-
-	bind := initializeBindMocked(zoneInfo, nil)
-
-	bind.ArrayRecords = arrayRecords
-
-	bind.GetZoneRecords()
-	array := bind.ArrayRecords
-
-	assert.Equal(t, array, arrayRecords)
+	assert.Equal(t, "IN", record.Class)
+	assert.Equal(t, "SOA", record.Type)
+	assert.Equal(t, "86400", record.TimeToLive)
+	assert.Equal(t, "myzone.com arthur29 ( 2020021600 3600 900 604800 86400 )", record.Data)
 }
